@@ -3,32 +3,99 @@ import './App.css';
 
 // ! Function to generate array of random letters
 
-const generateLetters = (length, characters) => {
-  let letters = [];
-  for (let i = 0; i < length; i++) {
-    letters.push(characters[Math.floor(Math.random() * characters.length)])
-  };
-  return letters;
+// const generateLetters = (length, characters) => {
+//   let letters = [];
+//   for (let i = 0; i < length; i++) {
+//     letters.push(characters[Math.floor(Math.random() * characters.length)])
+//   };
+//   return letters;
+// }
+
+// ! Changed method to actually replicate dice (taken from own game)
+
+const randomLetter = (letters) => {
+  let letter = letters[Math.floor(Math.random() * letters.length)]
+  return letter;
 }
 
-// ! Function to check whether word is a real word (using Dictionary API)
+const splitArray = (array, chunkSize) => {
+  let splitArray = [];
+  for (let i = 0; i < array.length; i += chunkSize) {
+    const chunk = array.slice(i, i + chunkSize);
+    splitArray.push(chunk)
+  }
+  return splitArray;
+}
 
-// const isWord = (str) => {
+const shuffleLetters = (letters) => {
+  let a = letters
+  const n = letters.length
 
-// }
+  for (let i = n - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    let temp = a[i];
+    a[i] = a[j];
+    a[j] = temp;
+  }
+  return a
+}
 
 // ! Creating each row of board and nesting in an array
 
 const n = 4
-const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+// const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-// * WOULD BE NICE TO SPECIFY LETTERS ON EACH DICE
+const dice1 = ["H","S","P","A","C","O"]
+const dice2 = ["E","E","G","N","A","A"]
+const dice3 = ["T","E","R","W","H","V"]
+const dice4 = ["T","Y","E","L","T","R"]
+const dice5 = ["D","R","Y","V","L","E"]
+const dice6 = ["H","N","L","N","Z","R"]
+const dice7 = ["L","R","E","I","X","D"]
+const dice8 = ["G","E","W","N","H","E"]
+const dice9 = ["S","N","E","I","E","U"]
+const dice10 = ["A","W","T","O","T","O"]
+const dice11 = ["Y","T","D","T","S","I"]
+const dice12 = ["B","O","B","J","A","O"]
+const dice13 = ["I","U","N","H","M","QU"]
+const dice14 = ["C","M","U","O","T","I"]
+const dice15 = ["K","F","A","F","P","S"]
+const dice16 = ["T","S","E","O","I","S"]
 
-const gameLettersRow1 = generateLetters(n, alphabet)
-const gameLettersRow2 = generateLetters(n, alphabet)
-const gameLettersRow3 = generateLetters(n, alphabet)
-const gameLettersRow4 = generateLetters(n, alphabet)
-const gameLetters = [gameLettersRow1, gameLettersRow2, gameLettersRow3, gameLettersRow4]
+// ! below is for random letters - changed method to use virtual dice
+
+// const gameLettersRow1 = generateLetters(n, alphabet)
+// const gameLettersRow2 = generateLetters(n, alphabet)
+// const gameLettersRow3 = generateLetters(n, alphabet)
+// const gameLettersRow4 = generateLetters(n, alphabet)
+
+const letter1 = randomLetter(dice1);
+const letter2 = randomLetter(dice2);
+const letter3 = randomLetter(dice3);
+const letter4 = randomLetter(dice4);
+const letter5 = randomLetter(dice5);
+const letter6 = randomLetter(dice6);
+const letter7 = randomLetter(dice7);
+const letter8 = randomLetter(dice8);
+const letter9 = randomLetter(dice9);
+const letter10 = randomLetter(dice10);
+const letter11 = randomLetter(dice11);
+const letter12 = randomLetter(dice12);
+const letter13 = randomLetter(dice13);
+const letter14 = randomLetter(dice14);
+const letter15 = randomLetter(dice15);
+const letter16 = randomLetter(dice16);
+
+let letters = [letter1, letter2, letter3, letter4, letter5, letter6, letter7, letter8, letter9, letter10, letter11, letter12, letter13, letter14, letter15, letter16];
+
+console.log(letters);
+let shuffledLetters = shuffleLetters(letters);
+console.log(shuffledLetters);
+let gameLetters = splitArray(shuffledLetters, 4);
+console.log(gameLetters);
+
+// const gameLetters = splitArray(shuffleLetters(letters));
+// console.log(gameLetters);
 
 // ! Initialise empty array of all words and also array of correct words
 
@@ -95,50 +162,58 @@ console.log("Correct words:", correctGameWords);
 
 // ! Function for input field component
 
+let message = "Please type word and press enter..."
+
 function InputField() {
 
   const getInput = (event) => {
     if (event.key === "Enter") {
       checkWord(event.target.value);
+      console.log(event.target.value);
       event.target.value = "";
     }
   }
 
   const checkWord = (word) => {
+    console.log(word.toUpperCase());
+    console.log(word.length);
     if (allGameWords.includes(word.toUpperCase())) {
       if (word.length >= 8) {
-        console.log("WORD WORTH 11 POINTS!")
+        message = "11 POINTS!";
+        console.log("11 POINTS!");
       }
       else {
         switch (word.length) {
           case 3:
-            console.log("WORD WORTH 1 POINT!");
+            message = "1 POINT!";
+            console.log("1 POINT!");
             break;
           case 4:
-            console.log("WORD WORTH 1 POINT!");
+            message = "1 POINT!";
+            console.log("1 POINT!");
             break;
           case 5:
-            console.log("WORD WORTH 2 POINTs!");
+            message = "2 POINTS!";
+            console.log("2 POINTS!");
             break;
           case 6:
-            console.log("WORD WORTH 3 POINTs!");
+            message = "3 POINTS!";
+            console.log("3 POINTS!");
             break;
           case 7:
-            console.log("WORD WORTH 4 POINTs!");
-            break;
-          default:
-            console.log("SOME SORT OF WEIRD ERROR...");
+            message = "4 POINTS!";
+            console.log("4 POINTS!");
             break;
         }
       }
     }
-    else {
-      console.log("NOT VALID!")
-    }
+    console.log(message);
   }
 
   return (
     <div className="my-3">
+      <h4 className="message my-3">{message}</h4>
+      {/* above isn't changing... */}
       <input type="text" placeholder="Enter word and hit enter" className='w-50' onKeyUp={getInput} />
     </div>
   )
