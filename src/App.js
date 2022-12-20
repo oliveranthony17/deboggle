@@ -1,17 +1,7 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.css';
 
-// ! Function to generate array of random letters
-
-// const generateLetters = (length, characters) => {
-//   let letters = [];
-//   for (let i = 0; i < length; i++) {
-//     letters.push(characters[Math.floor(Math.random() * characters.length)])
-//   };
-//   return letters;
-// }
-
-// ! Changed method to actually replicate dice (taken from own game)
+// ! Generic methods to implement on dice - random letter from dice, split array in to nested arrays, shuffle letters
 
 const randomLetter = (letters) => {
   let letter = letters[Math.floor(Math.random() * letters.length)]
@@ -40,10 +30,7 @@ const shuffleLetters = (letters) => {
   return a
 }
 
-// ! Creating each row of board and nesting in an array
-
-const n = 4
-// const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+// ! Creating dice - taken from physical game
 
 const dice1 = ["H","S","P","A","C","O"]
 const dice2 = ["E","E","G","N","A","A"]
@@ -62,12 +49,7 @@ const dice14 = ["C","M","U","O","T","I"]
 const dice15 = ["K","F","A","F","P","S"]
 const dice16 = ["T","S","E","O","I","S"]
 
-// ! below is for random letters - changed method to use virtual dice
-
-// const gameLettersRow1 = generateLetters(n, alphabet)
-// const gameLettersRow2 = generateLetters(n, alphabet)
-// const gameLettersRow3 = generateLetters(n, alphabet)
-// const gameLettersRow4 = generateLetters(n, alphabet)
+// ! Picking a random letter from each dice
 
 const letter1 = randomLetter(dice1);
 const letter2 = randomLetter(dice2);
@@ -86,142 +68,241 @@ const letter14 = randomLetter(dice14);
 const letter15 = randomLetter(dice15);
 const letter16 = randomLetter(dice16);
 
-let letters = [letter1, letter2, letter3, letter4, letter5, letter6, letter7, letter8, letter9, letter10, letter11, letter12, letter13, letter14, letter15, letter16];
+// ! Creating array of 16 letters
 
-console.log(letters);
-let shuffledLetters = shuffleLetters(letters);
-console.log(shuffledLetters);
+const letters = [letter1, letter2, letter3, letter4, letter5, letter6, letter7, letter8, letter9, letter10, letter11, letter12, letter13, letter14, letter15, letter16];
+
+console.log("Selected letters from dice: ", letters);
+
+// ! Shuffling 16 letters
+
+const shuffledLetters = shuffleLetters(letters);
+
+console.log("Now shuffled...: ", shuffledLetters);
+
+// ! Splitting in to 4x4 nested array
+
 let gameLetters = splitArray(shuffledLetters, 4);
-console.log(gameLetters);
 
-// const gameLetters = splitArray(shuffleLetters(letters));
-// console.log(gameLetters);
+console.log("Now split in to 4 x 4 board: ", gameLetters);
 
-// ! Initialise empty array of all words and also array of correct words
+// ! Function to check whether word is a real word using dictionary API
 
-const allGameWords = []
-const correctGameWords = []
-
-// ! Recursive function to generate all words from grid of min length 3
-
-const findWordsRecursive = (letters, visited, i, j, str) => {
-  // mark current cell as visited
-  visited[i][j] = true;
-  // append current letter to Str
-  str = str + letters[i][j];
-
-  // if word exists then push to words array
-  if (str.length >= 3) {
-    // console.log(str);
-    allGameWords.push(str);
-  }
-
-  // traverse the 8 adjacent cells of [i][j] row by row starting top left - skips out [i][j] as marked visited as true
-  for (let row = i; row <= i + 1 && row < n; row++)
-    for (let col = j; col <= j + 1 && col < n; col++)
-      if (row >= 0 && col >= 0 && !visited[row][col])
-        findWordsRecursive(letters, visited, row, col, str);
-
-  // erase current letters from string
-  str = "" + str[str.length - 1];
-  // set visited to false
-  visited[i][j] = false;
+async function checkRealWord(word) {
+  const url = `https://wagon-dictionary.herokuapp.com/${word.toLowerCase()}`
+  const response = await fetch(url);
+  const responseJSON = await response.json();
+  return responseJSON.found;
 }
 
-const findWords = (letters) => {
-  let visited = Array.from(Array(n), () => new Array(n).fill(0));
+// ! Function to check whether work is on board
 
-  var str = "";
+// // TEMPORARILY FIX GAME LETTERS
+// gameLetters = [
+//   ["Y","N","U","O"],
+//   ["N","P","N","M"],
+//   ["Z","Y","S","F"],
+//   ["V","O","D","S"]
+// ]
 
-  for (let i = 0; i < n; i++) {
-    for (let j = 0; j < n; j++) {
-      findWordsRecursive(letters, visited, i, j, str);
-    }
+function getAllIndexes(array, value) {
+  let indexes = [];
+  let i = -1;
+  while ((i = array.indexOf(value, i + 1)) !== -1) {
+    indexes.push(i);
   }
+  return indexes;
 }
 
-// ! Create all words from our gameLetters array (even made up words!!)
+function getLetterCoordinates(letter) {
+  const upperCaseLetter = letter.toUpperCase();
+  let coordinates = []
+  let row1Indexes = getAllIndexes(gameLetters[0], upperCaseLetter)
+  let row2Indexes = getAllIndexes(gameLetters[1], upperCaseLetter)
+  let row3Indexes = getAllIndexes(gameLetters[2], upperCaseLetter)
+  let row4Indexes = getAllIndexes(gameLetters[3], upperCaseLetter)
 
-findWords(gameLetters)
-
-// ! Check each word in allGameWords
-
-allGameWords.forEach((word, i) => {
-  const url = `https://wagon-dictionary.herokuapp.com/${word}`
-  fetch(url)
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.found) {
-        console.log(word);
-        correctGameWords.push(word)
-      }
-    })
-})
-
-console.log("Correct words:", correctGameWords);
-
-// ! Function for input field component
-
-let message = "Please type word and press enter..."
-
-function InputField() {
-
-  const getInput = (event) => {
-    if (event.key === "Enter") {
-      checkWord(event.target.value);
-      console.log(event.target.value);
-      event.target.value = "";
+  for (let i = 0; i < row1Indexes.length; i++) {
+    if (row1Indexes[i] !== undefined) {
+      coordinates.push({
+        row: 0,
+        column: row1Indexes[i]
+      })
     }
   }
+  for (let i = 0; i < row2Indexes.length; i++) {
+    if (row2Indexes[i] !== undefined) {
+      coordinates.push({
+        row: 1,
+        column: row2Indexes[i]
+      })
+    }
+  }
+  for (let i = 0; i < row3Indexes.length; i++) {
+    if (row3Indexes[i] !== undefined) {
+      coordinates.push({
+        row: 2,
+        column: row3Indexes[i]
+      })
+    }
+  }
+  for (let i = 0; i < row4Indexes.length; i++) {
+    if (row4Indexes[i] !== undefined) {
+      coordinates.push({
+        row: 3,
+        column: row4Indexes[i]
+      })
+    }
+  }
+  return coordinates
+}
 
-  const checkWord = (word) => {
-    console.log(word.toUpperCase());
-    console.log(word.length);
-    if (allGameWords.includes(word.toUpperCase())) {
-      if (word.length >= 8) {
-        message = "11 POINTS!";
-        console.log("11 POINTS!");
-      }
-      else {
-        switch (word.length) {
-          case 3:
-            message = "1 POINT!";
-            console.log("1 POINT!");
+function areNeighbours(a, b) {
+  let n_of_a = {
+      row: a.row - 1,
+      column: a.column
+  }
+  if (JSON.stringify(b) === JSON.stringify(n_of_a)) {return true}
+
+  let e_of_a = {
+      row: a.row,
+      column: a.column + 1
+  }
+  if (JSON.stringify(b) === JSON.stringify(e_of_a)) {return true}
+
+  let s_of_a = {
+      row: a.row + 1,
+      column: a.column
+  }
+  if (JSON.stringify(b) === JSON.stringify(s_of_a)) {return true}
+
+  let w_of_a = {
+      row: a.row,
+      column: a.column - 1
+  }
+  if (JSON.stringify(b) === JSON.stringify(w_of_a)) {return true}
+
+  return false;
+}
+
+// TODO below allows tiles to be used twice...
+
+// TODO need additional logic for "QU"....
+
+function checkWordOnBoard(word) {
+  let passedTest = true;
+  let previousLetterCoordinates = undefined;
+
+  //? if true, set this as new previousLetterCoordinates and move on to next letter
+
+  //? iterate through letters in the word (starting with first of course)
+  for (let i = 0; i < word.length; i++) {
+    //? find letterCoordinates (array) of first letter on board
+    let letterCoordinates = getLetterCoordinates(word[i]);
+    //? if the array is empty -> passedTest = false and break
+    if (letterCoordinates.length === 0) {
+      passedTest = false;
+      break;
+    }
+    //? otherwise, iterate through letterCoordinates array and check whether any of them are neighbours to previousLetterCoordinates - if not then passedTest = false and break
+    if (previousLetterCoordinates) {
+      for (let i = 0; i < letterCoordinates.length; i++) {
+        for (let j = 0; j < previousLetterCoordinates; j++) {
+          if (!areNeighbours(previousLetterCoordinates[j], letterCoordinates[i])) {
+            passedTest = false;
+            // console.log("Not neighbours");
             break;
-          case 4:
-            message = "1 POINT!";
-            console.log("1 POINT!");
-            break;
-          case 5:
-            message = "2 POINTS!";
-            console.log("2 POINTS!");
-            break;
-          case 6:
-            message = "3 POINTS!";
-            console.log("3 POINTS!");
-            break;
-          case 7:
-            message = "4 POINTS!";
-            console.log("4 POINTS!");
-            break;
+          }
         }
       }
     }
-    console.log(message);
+    // console.log(`${word[i]} MUST BE ON BOARD AND NEIGHBOURS WOO`);
+    previousLetterCoordinates = letterCoordinates;
   }
+  return passedTest
+}
+
+// ! Function for input field component
+
+function InputField({onUserInput}) {
+  // props always passed in as an object
+
+  const setInput = (event) => {
+    if (event.key === "Enter") {
+      // scoreWord(event.target.value);
+      // console.log(event.target.value);
+      // event.target.value = "";
+      onUserInput(event.target.value)
+      // TODO needs to clear input once enter hit!
+    }
+  }
+
 
   return (
     <div className="my-3">
       <h4 className="message my-3">{message}</h4>
       {/* above isn't changing... */}
-      <input type="text" placeholder="Enter word and hit enter" className='w-50' onKeyUp={getInput} />
+      <input type="text" placeholder="Enter word and hit enter" className='w-50' onKeyUp={setInput} />
     </div>
   )
 }
 
+// TODO extract functions in to utils.js file and import
+
+let message = "Please type word and press enter..."
+
+const scoreWord = (word) => {
+  if (!word) return
+  if (checkRealWord(word) && checkWordOnBoard(word)) {
+    console.log("passed");
+    if (word.length >= 8) {
+      message = "11 POINTS!";
+      console.log("11 POINTS!");
+    }
+    else {
+      switch (word.length) {
+        case 3:
+          message = "1 POINT!";
+          console.log("1 POINT");
+          break;
+        case 4:
+          message = "1 POINT!";
+          console.log("1 POINT");
+          break;
+        case 5:
+          message = "2 POINTS!";
+          console.log("2 POINTS");
+          break;
+        case 6:
+          message = "3 POINTS!";
+          console.log("3 POINTS");
+          break;
+        case 7:
+          message = "4 POINTS!";
+          console.log("4 POINTS");
+          break;
+      }
+    }
+  } else {
+    console.log("failed");
+  }
+}
+
 // ! App function generating board and user display
 
+// keep App function clean and slim
+
 function App() {
+  // state - nothing outside this can see it - belongs to app
+  // when app dismounts (closes) state is gone - back to default
+  const [input, setInput] = useState(null)
+  // const [message, setMessage] = useState("Please type word and press enter...")
+
+  // function in a function is a "callback"
+  useEffect(() => {
+    // anything in here only runs if input (dependancy array) changes
+    scoreWord(input)
+  }, [input])
 
   return (
     <div className="App">
@@ -253,10 +334,13 @@ function App() {
           <div className="col-3 game-tile">{gameLetters[3][2]}</div>
           <div className="col-3 game-tile">{gameLetters[3][3]}</div>
         </div>
-        <InputField />
+        <InputField onUserInput={setInput}/>
+        {/* onUserInput passed in to InputField() */}
       </div>
     </div>
   )
 }
 
 export default App;
+
+// console.log("I'm the last line hehe");
