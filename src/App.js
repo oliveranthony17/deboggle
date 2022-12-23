@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
 
+// TODO RE-FACTOR IN TO COMPONENTS ONCE FULLY FUNCTIONAL
+
 // ! Generic methods to implement on dice - random letter from dice, split array in to nested arrays, shuffle letters
 
 const randomLetter = (letters) => {
@@ -90,10 +92,25 @@ console.log("Now split in to 4 x 4 board: ", gameLetters);
 
 async function checkRealWord(word) {
   const url = `https://wagon-dictionary.herokuapp.com/${word.toLowerCase()}`
+  // console.log(url);
   const response = await fetch(url);
   const responseJSON = await response.json();
-  return responseJSON.found;
+  // console.log(responseJSON.found);
+  return responseJSON;
 }
+
+function checkRealWordTest(word) {
+  if (checkRealWord(word)) {
+    console.log("works");
+  } else {
+    console.log("don't work...");
+  }
+}
+
+// checkRealWordTest("hello") // returns "works"
+console.log(checkRealWord("hello")) // returns true
+// checkRealWordTest("peunhi") // returns "works" - what is going on...?
+console.log(checkRealWord("peunhi")) // returns false
 
 // ! Function to check whether work is on board
 
