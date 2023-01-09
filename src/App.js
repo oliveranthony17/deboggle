@@ -46,7 +46,7 @@ const dice9 = ["S","N","E","I","E","U"]
 const dice10 = ["A","W","T","O","T","O"]
 const dice11 = ["Y","T","D","T","S","I"]
 const dice12 = ["B","O","B","J","A","O"]
-const dice13 = ["I","U","N","H","M","QU"]
+const dice13 = ["I","U","N","H","M","Qu"]
 const dice14 = ["C","M","U","O","T","I"]
 const dice15 = ["K","F","A","F","P","S"]
 const dice16 = ["T","S","E","O","I","S"]
@@ -106,6 +106,8 @@ function checkRealWordTest(word) {
     console.log("don't work...");
   }
 }
+
+// TODO always returns true for word
 
 // checkRealWordTest("hello") // returns "works"
 console.log(checkRealWord("hello")) // returns true
@@ -239,70 +241,118 @@ function checkWordOnBoard(word) {
   return passedTest
 }
 
-// ! Function for input field component
+// ! COMPONENTS BELOW
 
-function InputField({onUserInput}) {
-  // props always passed in as an object
+// TODO extract functions in to utils.js file and import
 
-  const setInput = (event) => {
-    if (event.key === "Enter") {
-      // scoreWord(event.target.value);
-      // console.log(event.target.value);
-      // event.target.value = "";
-      onUserInput(event.target.value)
-      // TODO needs to clear input once enter hit!
-    }
-  }
+// ! GAME BOARD COMPONENT
 
-
+function GameBoard() {
   return (
-    <div className="my-3">
-      <h4 className="message my-3">{message}</h4>
-      {/* above isn't changing... */}
-      <input type="text" placeholder="Enter word and hit enter" className='w-50' onKeyUp={setInput} />
+    <div className="game-container justify-content-center">
+      <div className="row game-row justify-content-center">
+        <div className="col-3 game-tile">{gameLetters[0][0]}</div>
+        <div className="col-3 game-tile">{gameLetters[0][1]}</div>
+        <div className="col-3 game-tile">{gameLetters[0][2]}</div>
+        <div className="col-3 game-tile">{gameLetters[0][3]}</div>
+      </div>
+      <div className="row game-row justify-content-center">
+        <div className="col-3 game-tile">{gameLetters[1][0]}</div>
+        <div className="col-3 game-tile">{gameLetters[1][1]}</div>
+        <div className="col-3 game-tile">{gameLetters[1][2]}</div>
+        <div className="col-3 game-tile">{gameLetters[1][3]}</div>
+      </div>
+      <div className="row game-row justify-content-center">
+        <div className="col-3 game-tile">{gameLetters[2][0]}</div>
+        <div className="col-3 game-tile">{gameLetters[2][1]}</div>
+        <div className="col-3 game-tile">{gameLetters[2][2]}</div>
+        <div className="col-3 game-tile">{gameLetters[2][3]}</div>
+      </div>
+      <div className="row game-row justify-content-center">
+        <div className="col-3 game-tile">{gameLetters[3][0]}</div>
+        <div className="col-3 game-tile">{gameLetters[3][1]}</div>
+        <div className="col-3 game-tile">{gameLetters[3][2]}</div>
+        <div className="col-3 game-tile">{gameLetters[3][3]}</div>
+      </div>
     </div>
   )
 }
 
-// TODO extract functions in to utils.js file and import
+// ! FUNCTION TO SCORE WORD AND RETURN MESSAGE
 
-let message = "Please type word and press enter..."
+// const scoreWord = (word) => {
+//   if (!word) return
+//   let message = ""
+//   if (checkRealWord(word) && checkWordOnBoard(word)) {
+//     console.log("passed");
+//     if (word.length >= 8) {
+//       message = "11 POINTS!";
+//       console.log("11 POINTS!");
+//     }
+//     else {
+//       switch (word.length) {
+//         case 3:
+//           message = "1 POINT!";
+//           console.log("1 POINT");
+//           break;
+//         case 4:
+//           message = "1 POINT!";
+//           console.log("1 POINT");
+//           break;
+//         case 5:
+//           message = "2 POINTS!";
+//           console.log("2 POINTS");
+//           break;
+//         case 6:
+//           message = "3 POINTS!";
+//           console.log("3 POINTS");
+//           break;
+//         case 7:
+//           message = "4 POINTS!";
+//           console.log("4 POINTS");
+//           break;
+//       }
+//     }
+//   } else {
+//     console.log("failed");
+//   }
+//   return message
+// }
 
-const scoreWord = (word) => {
-  if (!word) return
-  if (checkRealWord(word) && checkWordOnBoard(word)) {
-    console.log("passed");
-    if (word.length >= 8) {
-      message = "11 POINTS!";
-      console.log("11 POINTS!");
-    }
-    else {
-      switch (word.length) {
-        case 3:
-          message = "1 POINT!";
-          console.log("1 POINT");
-          break;
-        case 4:
-          message = "1 POINT!";
-          console.log("1 POINT");
-          break;
-        case 5:
-          message = "2 POINTS!";
-          console.log("2 POINTS");
-          break;
-        case 6:
-          message = "3 POINTS!";
-          console.log("3 POINTS");
-          break;
-        case 7:
-          message = "4 POINTS!";
-          console.log("4 POINTS");
-          break;
-      }
-    }
-  } else {
-    console.log("failed");
-  }
+// function Message() {
+//   const [message, setMessage] = useState("Please type word and press enter...")
+
+//   function handleEnterKey() {
+//     setMessage("chicken");
+//   }
+
+//   return (
+    // <h4 className="message my-3" onKeyUp={handleEnterKey} >
+    //   {message}
+    // </h4>
+//   )
+// }
+
+// ! INPUT FORM AND MESSAGE COMPONENT
+
+function InputField({onUserInput, inputText, onEnter}) {
+  // props always passed in as an object
+
+  // const setInput = (event) => {
+  //   if (event.key === "Enter") {
+  //     // scoreWord(event.target.value);
+  //     // console.log(event.target.value);
+  //     // event.target.value = "";
+  //     onUserInput(event.target.value)
+  //     // TODO needs to clear input once enter hit!
+  //   }
+  // }
+  console.log(inputText)
+  return (
+    <div className="my-3">
+      <input type="text" placeholder="Enter word and hit enter" className='w-50' onChange={(event) => onUserInput(event.target.value)} value={inputText} onKeyUp={onEnter}/>
+    </div>
+  )
 }
 
 // ! App function generating board and user display
@@ -312,52 +362,56 @@ const scoreWord = (word) => {
 function App() {
   // state - nothing outside this can see it - belongs to app
   // when app dismounts (closes) state is gone - back to default
-  const [input, setInput] = useState(null)
-  // const [message, setMessage] = useState("Please type word and press enter...")
+  const [input, setInput] = useState("")
+  const [message, setMessage] = useState("Please type word and press enter...")
 
-  // function in a function is a "callback"
-  useEffect(() => {
-    // anything in here only runs if input (dependancy array) changes
-    scoreWord(input)
-  }, [input])
+  const scoreWord = (event) => {
+    if (event.key === "Enter") {
+      if (!input) return
+      if (checkRealWord(input) && checkWordOnBoard(input)) {
+        console.log("passed");
+        if (input.length >= 8) {
+          setMessage("11 POINTS!");
+        }
+        else {
+          switch (input.length) {
+            case 3:
+              setMessage("1 POINT");
+              break;
+            case 4:
+              setMessage("1 POINT");
+              break;
+            case 5:
+              setMessage("2 POINTS");
+              break;
+            case 6:
+              setMessage("3 POINTS");
+              break;
+            case 7:
+              setMessage("4 POINTS");
+              break;
+          }
+        }
+      } else {
+        setMessage("failed");
+      }
+      setInput("")
+    }
+  }
 
   return (
     <div className="App">
       <header className="App-header py-3">
         <h1>DeBoggle</h1>
       </header>
-      <div className="game-container justify-content-center">
-        <div className="row game-row justify-content-center">
-          <div className="col-3 game-tile">{gameLetters[0][0]}</div>
-          <div className="col-3 game-tile">{gameLetters[0][1]}</div>
-          <div className="col-3 game-tile">{gameLetters[0][2]}</div>
-          <div className="col-3 game-tile">{gameLetters[0][3]}</div>
-        </div>
-        <div className="row game-row justify-content-center">
-          <div className="col-3 game-tile">{gameLetters[1][0]}</div>
-          <div className="col-3 game-tile">{gameLetters[1][1]}</div>
-          <div className="col-3 game-tile">{gameLetters[1][2]}</div>
-          <div className="col-3 game-tile">{gameLetters[1][3]}</div>
-        </div>
-        <div className="row game-row justify-content-center">
-          <div className="col-3 game-tile">{gameLetters[2][0]}</div>
-          <div className="col-3 game-tile">{gameLetters[2][1]}</div>
-          <div className="col-3 game-tile">{gameLetters[2][2]}</div>
-          <div className="col-3 game-tile">{gameLetters[2][3]}</div>
-        </div>
-        <div className="row game-row justify-content-center">
-          <div className="col-3 game-tile">{gameLetters[3][0]}</div>
-          <div className="col-3 game-tile">{gameLetters[3][1]}</div>
-          <div className="col-3 game-tile">{gameLetters[3][2]}</div>
-          <div className="col-3 game-tile">{gameLetters[3][3]}</div>
-        </div>
-        <InputField onUserInput={setInput}/>
-        {/* onUserInput passed in to InputField() */}
-      </div>
+      <GameBoard />
+      {/* <Message /> */}
+      <h4 className="message my-3">
+        {message}
+      </h4>
+      <InputField onUserInput={setInput} inputText={input} onEnter={scoreWord}/>
     </div>
   )
 }
 
 export default App;
-
-// console.log("I'm the last line hehe");
