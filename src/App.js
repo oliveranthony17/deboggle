@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, {useEffect, useState} from 'react';
 import './App.css';
 
@@ -92,37 +93,19 @@ console.log("Now split in to 4 x 4 board: ", gameLetters);
 
 async function checkRealWord(word) {
   const url = `https://wagon-dictionary.herokuapp.com/${word.toLowerCase()}`
-  // console.log(url);
-  const response = await fetch(url);
-  const responseJSON = await response.json();
-  // console.log(responseJSON.found);
-  return responseJSON;
+    axios.get(url).then((response) => {
+      return response.data.found;
+    })
 }
 
-function checkRealWordTest(word) {
-  if (checkRealWord(word)) {
-    console.log("works");
-  } else {
-    console.log("don't work...");
-  }
-}
+// console.log("before function");
 
-// TODO always returns true for word
+// checkRealWord("hello")
+// checkRealWord("peunhi")
 
-// checkRealWordTest("hello") // returns "works"
-console.log(checkRealWord("hello")) // returns true
-// checkRealWordTest("peunhi") // returns "works" - what is going on...?
-console.log(checkRealWord("peunhi")) // returns false
+// console.log("after function");
 
-// ! Function to check whether work is on board
-
-// // TEMPORARILY FIX GAME LETTERS
-// gameLetters = [
-//   ["Y","N","U","O"],
-//   ["N","P","N","M"],
-//   ["Z","Y","S","F"],
-//   ["V","O","D","S"]
-// ]
+// ! Functions to check whether work is on board
 
 function getAllIndexes(array, value) {
   let indexes = [];
@@ -205,7 +188,6 @@ function areNeighbours(a, b) {
 }
 
 // TODO below allows tiles to be used twice...
-
 // TODO need additional logic for "QU"....
 
 function checkWordOnBoard(word) {
@@ -242,7 +224,6 @@ function checkWordOnBoard(word) {
 }
 
 // ! COMPONENTS BELOW
-
 // TODO extract functions in to utils.js file and import
 
 // ! GAME BOARD COMPONENT
@@ -278,76 +259,9 @@ function GameBoard() {
   )
 }
 
-// ! FUNCTION TO SCORE WORD AND RETURN MESSAGE
-
-// const scoreWord = (word) => {
-//   if (!word) return
-//   let message = ""
-//   if (checkRealWord(word) && checkWordOnBoard(word)) {
-//     console.log("passed");
-//     if (word.length >= 8) {
-//       message = "11 POINTS!";
-//       console.log("11 POINTS!");
-//     }
-//     else {
-//       switch (word.length) {
-//         case 3:
-//           message = "1 POINT!";
-//           console.log("1 POINT");
-//           break;
-//         case 4:
-//           message = "1 POINT!";
-//           console.log("1 POINT");
-//           break;
-//         case 5:
-//           message = "2 POINTS!";
-//           console.log("2 POINTS");
-//           break;
-//         case 6:
-//           message = "3 POINTS!";
-//           console.log("3 POINTS");
-//           break;
-//         case 7:
-//           message = "4 POINTS!";
-//           console.log("4 POINTS");
-//           break;
-//       }
-//     }
-//   } else {
-//     console.log("failed");
-//   }
-//   return message
-// }
-
-// function Message() {
-//   const [message, setMessage] = useState("Please type word and press enter...")
-
-//   function handleEnterKey() {
-//     setMessage("chicken");
-//   }
-
-//   return (
-    // <h4 className="message my-3" onKeyUp={handleEnterKey} >
-    //   {message}
-    // </h4>
-//   )
-// }
-
 // ! INPUT FORM AND MESSAGE COMPONENT
 
 function InputField({onUserInput, inputText, onEnter}) {
-  // props always passed in as an object
-
-  // const setInput = (event) => {
-  //   if (event.key === "Enter") {
-  //     // scoreWord(event.target.value);
-  //     // console.log(event.target.value);
-  //     // event.target.value = "";
-  //     onUserInput(event.target.value)
-  //     // TODO needs to clear input once enter hit!
-  //   }
-  // }
-  console.log(inputText)
   return (
     <div className="my-3">
       <input type="text" placeholder="Enter word and hit enter" className='w-50' onChange={(event) => onUserInput(event.target.value)} value={inputText} onKeyUp={onEnter}/>
@@ -367,7 +281,13 @@ function App() {
 
   const scoreWord = (event) => {
     if (event.key === "Enter") {
-      if (!input) return
+      if (!input) return // guard clause
+
+      console.log("checking word is on board...");
+      console.log(checkWordOnBoard(input));
+      console.log("checking word is real...");
+      console.log(checkRealWord(input));
+
       if (checkRealWord(input) && checkWordOnBoard(input)) {
         console.log("passed");
         if (input.length >= 8) {
@@ -405,7 +325,6 @@ function App() {
         <h1>DeBoggle</h1>
       </header>
       <GameBoard />
-      {/* <Message /> */}
       <h4 className="message my-3">
         {message}
       </h4>
