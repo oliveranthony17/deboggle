@@ -1,5 +1,5 @@
 // import axios from "axios";
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import './App.css';
 
 // TODO RE-FACTOR IN TO COMPONENTS ONCE FULLY FUNCTIONAL
@@ -291,6 +291,7 @@ function App() {
           setMessage("11 POINTS!");
         }
         else {
+          // eslint-disable-next-line
           switch (input.length) {
             case 3:
               setMessage("1 POINT");
