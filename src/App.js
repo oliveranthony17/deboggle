@@ -262,8 +262,8 @@ function GameBoard() {
 
 function InputField({onUserInput, inputText, onEnter}) {
   return (
-    <div className="my-3">
-      <input type="text" placeholder="Enter word and hit enter" className='w-50' onChange={(event) => onUserInput(event.target.value)} value={inputText} onKeyUp={onEnter}/>
+    <div className="my-3 ">
+      <input type="text" placeholder="Enter word and hit enter" className='w-50 text-field' onChange={(event) => onUserInput(event.target.value)} value={inputText} onKeyUp={onEnter}/>
     </div>
   )
 }

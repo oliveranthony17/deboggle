@@ -37,6 +37,8 @@
   font-weight: bolder;
   width: 15vw !important;
   height: 15vw !important;
+  max-width: 100px !important;
+  max-height: 100px !important;
   margin: 1vw;
   padding: 0px !important;
   background-color: rgb(229,229,230);
@@ -49,4 +51,8 @@
 
 .message {
   color: white;
+}
+
+.text-field {
+  max-width: 300px !important;
 }
