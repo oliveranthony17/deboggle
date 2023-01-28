@@ -38,11 +38,15 @@
   width: 15vw !important;
   height: 15vw !important;
   margin: 1vw;
-  padding: 0;
+  padding: 0px !important;
   background-color: rgb(229,229,230);
   border-radius: 8px;
   display: flex;
   justify-content: center;
   align-content: center;
   flex-direction: column;
+}
+
+.message {
+  color: white;
 }
