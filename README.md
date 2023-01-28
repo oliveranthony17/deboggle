@@ -1,6 +1,6 @@
 <a href="https://deboggle.herokuapp.com/"><strong>DeBoggle</strong></a> is an online game based on one of my favourite bord games "Boggle" - a simple yet very addictive word game!
 
-The app was created using the React JavaScript framework where the GameBoard component is created by randomly rolling 16 "dice" - created base on the dice in my physical game at home.
+The app was created using the <strong>React JavaScript</strong> framework where the GameBoard component is created by randomly rolling 16 "dice" - created base on the dice in my physical game at home.
 
 We also have the InputField component which uses state to detect user input. On enter, it uses as iterative function to confirm whether the word is actually on the board (still some work needed to prevent the ability to use a dice twice) and assigns a point based on the length. It also checks using a dictionary API whether the word is a real word. This then also changes the state of the message displayed and the text box is automatically cleared.
 
