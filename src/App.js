@@ -1,4 +1,4 @@
-import axios from "axios";
+// import axios from "axios";
 import React, {useEffect, useState} from 'react';
 import './App.css';
 
@@ -91,19 +91,18 @@ console.log("Now split in to 4 x 4 board: ", gameLetters);
 
 // ! Function to check whether word is a real word using dictionary API
 
-async function checkRealWord(word) {
-  const url = `https://wagon-dictionary.herokuapp.com/${word.toLowerCase()}`
-    axios.get(url).then((response) => {
-      return response.data.found;
-    })
+const checkRealWord = function (word) {
+  // let result = false
+  // fetch(`https://wagon-dictionary.herokuapp.com/${word.toLowerCase()}`)
+  //   .then(response => response.json())
+  //   .then(data => {
+  //     console.log(data);
+  //     // console.log(data.found);
+  //     result = data.found;
+  //   })
+  // return result
+  return true
 }
-
-// console.log("before function");
-
-// checkRealWord("hello")
-// checkRealWord("peunhi")
-
-// console.log("after function");
 
 // ! Functions to check whether work is on board
 
@@ -283,13 +282,11 @@ function App() {
     if (event.key === "Enter") {
       if (!input) return // guard clause
 
-      console.log("checking word is on board...");
-      console.log(checkWordOnBoard(input));
-      console.log("checking word is real...");
-      console.log(checkRealWord(input));
+
+      console.log("checking real word: ", checkRealWord(input));
+      console.log("checking on board: ", checkWordOnBoard(input));
 
       if (checkRealWord(input) && checkWordOnBoard(input)) {
-        console.log("passed");
         if (input.length >= 8) {
           setMessage("11 POINTS!");
         }
