@@ -1,10 +1,10 @@
-<a href="https://deboggle.herokuapp.com/"><strong>DeBoggle</strong></a> is an online game based on one of my favourite bord games "Boggle" - a simple yet very addictive word game!
+<a href="https://deboggle.herokuapp.com/"><strong>DeBoggle</strong></a> is an online game based on one of my favourite board games "Boggle" - a simple yet very addictive word game!
 
-The app was created using the <strong>React JavaScript</strong> framework where the GameBoard component is created by randomly rolling 16 "dice" - created base on the dice in my physical game at home.
+The app was created using the <strong>React</strong> JavaScript framework where the GameBoard component is created by randomly rolling 16 "dice" - each dice is created base on the dice in my physical game at home.
 
-We also have the InputField component which uses state to detect user input. On enter, it uses as iterative function to confirm whether the word is actually on the board (still some work needed to prevent the ability to use a dice twice) and assigns a point based on the length. It also checks using a dictionary API whether the word is a real word. This then also changes the state of the message displayed and the text box is automatically cleared.
+We also have the InputField component which uses state to detect user input. On enter, it uses as iterative function to confirm whether the word is actually on the board (still some work needed to prevent the ability to use a dice twice) and assigns a score based on the length. It also includes a function using a dictionary API to check whether the word is a real word. This then also changes the state of the message displayed and the text box is automatically cleared.
 
-There are future plans to create a backend where users can create a profile, save high scores and compete with friends - similar to the functionality of the very popular "Wordle".
+There are future plans to create a backend where users can create a profile, save high scores and compete with friends - similar to the functionality of the very popular game "Wordle".
 
 This is very much a prototype and there are plan to improve the design and make the game feel more fun!
 
